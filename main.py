@@ -74,6 +74,9 @@ Takes text and created a pdf with it
 Arguments: 
 string_to_pdf (str): Takes text that needs to be added to the pdf
 output_pdf(str): output filename, default: output.pdf
+
+Returns: 
+Creates a pdf with the text passed in the folder path
 '''
 def create_pdf(string_to_pdf, output_pdf= "output.pdf"):
     pdf = canvas.Canvas(output_pdf, pagesize=letter)
