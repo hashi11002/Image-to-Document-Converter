@@ -8,6 +8,7 @@ import cv2 #OpenCV for image processing
 import argparse #for getting image path as a command line argument
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
+from docx import Document
 
   
 # Defining paths to tesseract.exe 
@@ -78,8 +79,8 @@ output_pdf(str): output filename, default: output.pdf
 Returns: 
 Creates a pdf with the text passed in the folder path
 '''
-def create_pdf(string_to_pdf, output_pdf= "output.pdf"):
-    pdf = canvas.Canvas(output_pdf, pagesize=letter)
+def create_pdf(string_to_pdf, output_path= "output.pdf"):
+    pdf = canvas.Canvas(output_path, pagesize=letter)
     width, height = letter
 
     lines = string_to_pdf.split("\n")
@@ -90,19 +91,46 @@ def create_pdf(string_to_pdf, output_pdf= "output.pdf"):
         y_position -= 20
     
     pdf.save()
-    print(f"PDF created: {output_pdf}")
+    
 
-if __name__ == "__main__":
+'''
+Takes text and created a word document with it
+
+Arguments: 
+string_to_word (str): Takes text that needs to be added to the word doc
+output_pdf(str): output filename, default: output.docx
+
+Returns: 
+Creates a word document with the text passed in the folder path
+'''
+def create_word(string_to_word, output_path= "output.docx"):
+    doc = Document()
+
+    doc.add_paragraph(string_to_word)
+    doc.save(output_path)
+
+'''
+Main function
+'''
+def main():
     parser = argparse.ArgumentParser(description="Extract text from an image using Tesseract OCR.")
     parser.add_argument("image_path", type=str, help="Path to the image file")
-    parser.add_argument("format", type=str, choices=["pdf", "docx"], help="Select output format (pdf or docx).")
+    parser.add_argument("format", type=str, choices=["pdf", "word"], help="Select output format (pdf or docx).")
     parser.add_argument("--output", type=str, default="output", help="Output file name without extension.")
 
     args = parser.parse_args()
     extracted_text = extract_text(args.image_path)
     if args.format == "pdf":
         create_pdf(extracted_text, f"{args.output}.pdf")
+    elif(args.format == "word" or args.format == "docx"):
+        create_word(extracted_text, f"{args.output}.docx")
+    else:
+        print("Incorrect option. Use help for options")
     print("\nExtracted Text:\n", extracted_text)
+
+
+if __name__ == "__main__":
+    main()
 
 
 
